@@ -1,0 +1,5 @@
+rootProject.name = 'FC.Admin.Catalogo'
+include 'domain'
+include 'infrastructure'
+include 'application'
+

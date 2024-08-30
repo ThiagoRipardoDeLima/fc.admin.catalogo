@@ -1,10 +1,11 @@
 package com.fc.admin.catalogo.domain.category;
 
-import java.time.Instant;
-import java.util.UUID;
+import com.fc.admin.catalogo.domain.AggregateRoot;
 
-public class Category {
-    private String id;
+import java.time.Instant;
+
+public class Category extends AggregateRoot<CategoryID> {
+
     private String name;
     private String description;
     private boolean active;
@@ -13,25 +14,25 @@ public class Category {
     private Instant deleteAt;
 
     private Category(
-            final String id,
-            final String name,
-            final String description,
-            final boolean active,
-            final Instant createAt,
-            final Instant updateAt,
-            final Instant deleteAt
+            final CategoryID anId,
+            final String aName,
+            final String aDescription,
+            final boolean isActive,
+            final Instant aCreateAt,
+            final Instant aUpdateAt,
+            final Instant aDeleteAt
     ) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.active = active;
-        this.createAt = createAt;
-        this.updateAt = updateAt;
-        this.deleteAt = deleteAt;
+        super(anId);
+        this.name = aName;
+        this.description = aDescription;
+        this.active = isActive;
+        this.createAt = aCreateAt;
+        this.updateAt = aUpdateAt;
+        this.deleteAt = aDeleteAt;
     }
 
     public static Category newCategory(final String aName, final String aDescription, final boolean isActive){
-        final String id = UUID.randomUUID().toString();
+        final CategoryID id = CategoryID.unique();
         final Instant createAt = Instant.now();
         final Instant updateAt = Instant.now();
         final Instant deleteAt = null;
@@ -39,7 +40,7 @@ public class Category {
         return new Category(id, aName, aDescription, isActive, createAt, updateAt, deleteAt);
     }
 
-    public String getId() {
+    public CategoryID getId() {
         return id;
     }
 

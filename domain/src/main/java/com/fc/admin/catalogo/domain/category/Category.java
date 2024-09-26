@@ -1,6 +1,7 @@
 package com.fc.admin.catalogo.domain.category;
 
 import com.fc.admin.catalogo.domain.AggregateRoot;
+import com.fc.admin.catalogo.domain.validation.ValidationHandler;
 
 import java.time.Instant;
 
@@ -38,6 +39,11 @@ public class Category extends AggregateRoot<CategoryID> {
         final Instant deleteAt = null;
 
         return new Category(id, aName, aDescription, isActive, createAt, updateAt, deleteAt);
+    }
+
+    @Override
+    public void validate(final ValidationHandler handler) {
+        new CategoryValidator(this, handler).validate();
     }
 
     public CategoryID getId() {

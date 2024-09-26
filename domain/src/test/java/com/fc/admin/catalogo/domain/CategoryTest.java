@@ -1,6 +1,8 @@
 package com.fc.admin.catalogo.domain;
 
 import com.fc.admin.catalogo.domain.category.Category;
+import com.fc.admin.catalogo.domain.exceptions.DomainException;
+import com.fc.admin.catalogo.domain.validation.handler.ThrowsValidationHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +32,7 @@ public class CategoryTest {
     public void givenAnInvalidNullName_whenCallNewCategoryAndValidate_thenShouldReceiveError(){
         final String expectedName = null;
         final var expectedErrorCount = 1;
-        final var expectedErrorMessage = "name should not be null";
+        final var expectedErrorMessage = "'name' should not be null";
         final var expectedDescription = "A categoria mais top";
         final var expectedIsActive = true;
 
@@ -38,10 +40,10 @@ public class CategoryTest {
                 Category.newCategory(expectedName, expectedDescription, expectedIsActive);
 
         final var actualException =
-                Assertions.assertThrows(DomainException.class, () -> actualCategory.validate());
+                Assertions.assertThrows(DomainException.class, () -> actualCategory.validate(new ThrowsValidationHandler()));
 
-        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().size());
-        Assertions.assertEquals(expectedErrorCount, actualException.getErrors().get(0).getMessage());
+        Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
+        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
 
     }
 

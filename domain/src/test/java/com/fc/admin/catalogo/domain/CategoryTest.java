@@ -148,4 +148,143 @@ public class CategoryTest {
 
     }
 
+    @Test
+    public void givenAValidActiveCategory_whenCallDeactivate_thenReturnCategoryInactivated(){
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais top";
+        final var expectedIsActive = false;
+
+        final var aCategory =
+                Category.newCategory(expectedName, expectedDescription, true);
+
+        Assertions.assertDoesNotThrow(()-> aCategory.validate(new ThrowsValidationHandler()));
+
+        final var createdAt = aCategory.getCreateAt();
+        final var updatedAt = aCategory.getUpdateAt();
+
+        Assertions.assertTrue(aCategory.isActive());
+        Assertions.assertNull(aCategory.getDeleteAt());
+
+        final var actualCategory = aCategory.deactivate();
+
+        Assertions.assertDoesNotThrow(()-> actualCategory.validate(new ThrowsValidationHandler()));
+
+        Assertions.assertEquals(aCategory.getId(), actualCategory.getId());
+        Assertions.assertEquals(expectedName, actualCategory.getName());
+        Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
+        Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
+        Assertions.assertEquals(createdAt, actualCategory.getCreateAt());
+        Assertions.assertTrue(actualCategory.getUpdateAt().isAfter(updatedAt));
+        Assertions.assertNotNull(actualCategory.getDeleteAt());
+    }
+
+    @Test
+    public void givenAValidInactiveCategory_whenCallActivate_thenReturnCategoryActivated(){
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais top";
+        final var expectedIsActive = true;
+
+        final var aCategory =
+                Category.newCategory(expectedName, expectedDescription, false);
+
+        Assertions.assertDoesNotThrow(()-> aCategory.validate(new ThrowsValidationHandler()));
+
+        final var createdAt = aCategory.getCreateAt();
+        final var updatedAt = aCategory.getUpdateAt();
+
+        Assertions.assertFalse(aCategory.isActive());
+        Assertions.assertNotNull(aCategory.getDeleteAt());
+
+        final var actualCategory = aCategory.activate();
+
+        Assertions.assertDoesNotThrow(()-> actualCategory.validate(new ThrowsValidationHandler()));
+
+        Assertions.assertEquals(aCategory.getId(), actualCategory.getId());
+        Assertions.assertEquals(expectedName, actualCategory.getName());
+        Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
+        Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
+        Assertions.assertEquals(createdAt, actualCategory.getCreateAt());
+        Assertions.assertTrue(actualCategory.getUpdateAt().isAfter(updatedAt));
+        Assertions.assertNull(actualCategory.getDeleteAt());
+    }
+
+    @Test
+    public void givenAValidCategory_whenCallUpdate_thenReturnCategoryUpdated(){
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais top";
+        final var expectedIsActive = true;
+
+        final var aCategory =
+                Category.newCategory("Film", "A categoria", expectedIsActive);
+
+        Assertions.assertDoesNotThrow(()-> aCategory.validate(new ThrowsValidationHandler()));
+
+        final var createdAt = aCategory.getCreateAt();
+        final var updatedAt = aCategory.getUpdateAt();
+
+        final var actualCategory = aCategory.update(expectedName, expectedDescription, expectedIsActive);
+
+        Assertions.assertDoesNotThrow(()-> actualCategory.validate(new ThrowsValidationHandler()));
+
+        Assertions.assertEquals(aCategory.getId(), actualCategory.getId());
+        Assertions.assertEquals(expectedName, actualCategory.getName());
+        Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
+        Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
+        Assertions.assertEquals(createdAt, actualCategory.getCreateAt());
+        Assertions.assertTrue(actualCategory.getUpdateAt().isAfter(updatedAt));
+        Assertions.assertNull(actualCategory.getDeleteAt());    }
+
+    @Test
+    public void givenAValidCategory_whenCallUpdateToInactive_thenReturnCategoryUpdated(){
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais top";
+        final var expectedIsActive = false;
+
+        final var aCategory =
+                Category.newCategory("Film", "A categoria", true);
+
+        Assertions.assertDoesNotThrow(()-> aCategory.validate(new ThrowsValidationHandler()));
+        Assertions.assertTrue(aCategory.isActive());
+        Assertions.assertNull(aCategory.getDeleteAt());
+
+        final var createdAt = aCategory.getCreateAt();
+        final var updatedAt = aCategory.getUpdateAt();
+
+        final var actualCategory = aCategory.update(expectedName, expectedDescription, expectedIsActive);
+
+        Assertions.assertDoesNotThrow(()-> actualCategory.validate(new ThrowsValidationHandler()));
+
+        Assertions.assertEquals(aCategory.getId(), actualCategory.getId());
+        Assertions.assertEquals(expectedName, actualCategory.getName());
+        Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
+        Assertions.assertFalse(aCategory.isActive());
+        Assertions.assertEquals(createdAt, actualCategory.getCreateAt());
+        Assertions.assertTrue(actualCategory.getUpdateAt().isAfter(updatedAt));
+        Assertions.assertNotNull(actualCategory.getDeleteAt());
+    }
+
+    @Test
+    public void givenAValidCategory_whenCallUpdateWithInvalidParams_thenReturnCategoryUpdated(){
+        final String expectedName = null;
+        final var expectedDescription = "A categoria mais top";
+        final var expectedIsActive = true;
+
+        final var aCategory =
+                Category.newCategory("Film", "A categoria", expectedIsActive);
+
+        Assertions.assertDoesNotThrow(()-> aCategory.validate(new ThrowsValidationHandler()));
+
+        final var createdAt = aCategory.getCreateAt();
+        final var updatedAt = aCategory.getUpdateAt();
+
+        final var actualCategory = aCategory.update(expectedName, expectedDescription, expectedIsActive);
+
+        Assertions.assertEquals(aCategory.getId(), actualCategory.getId());
+        Assertions.assertEquals(expectedName, actualCategory.getName());
+        Assertions.assertEquals(expectedDescription, actualCategory.getDescription());
+        Assertions.assertTrue(aCategory.isActive());
+        Assertions.assertEquals(createdAt, actualCategory.getCreateAt());
+        Assertions.assertTrue(actualCategory.getUpdateAt().isAfter(updatedAt));
+        Assertions.assertNull(actualCategory.getDeleteAt());
+    }
 }

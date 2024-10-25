@@ -43,4 +43,23 @@ public class CreateCategoryUseCaseTest {
                         }
                 ));
     }
+
+    @Test
+    public void givenAnIvalidName_whenCallsCreateCategory_thenShouldReturnDomainException(){
+        final var expectedName = "Filme";
+        final var expectedDescription = "Categoria muito top";
+        final var expectedIsActive = true;
+
+        final var aComand = new CreateCategoryComand(expectedName, expectedDescription, expectedIsActive);
+
+        final CategoryGateway categoryGateway = Mockito.mock(CategoryGateway.class);
+        Mockito.when(categoryGateway.create(Mockito.any()))
+                .thenAnswer(AdditionalAnswers.returnsFirstArg());
+
+        final var usecase = new DefaultCreateCategoryUseCase(categoryGateway);
+
+        final var actualOutput = usecase.execute(aComand);
+
+    }
+
 }

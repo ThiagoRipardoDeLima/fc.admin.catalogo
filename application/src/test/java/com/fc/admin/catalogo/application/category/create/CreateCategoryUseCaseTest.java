@@ -2,29 +2,37 @@ package com.fc.admin.catalogo.application.category.create;
 
 import com.fc.admin.catalogo.domain.category.CategoryGateway;
 
+import com.fc.admin.catalogo.domain.exceptions.DomainException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalAnswers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Objects;
 
+@ExtendWith(MockitoExtension.class)
 public class CreateCategoryUseCaseTest {
+
+    @InjectMocks
+    private DefaultCreateCategoryUseCase useCase;
+
+    @Mock
+    private CategoryGateway categoryGateway;
 
     @Test
     public void givenAnValidComand_whenCallsCreateCategory_shouldReturnCategoryId(){
-
         final var expectedName = "Filme";
         final var expectedDescription = "Categoria muito top";
         final var expectedIsActive = true;
 
         final var aComand = CreateCategoryComand.with(expectedName, expectedDescription, expectedIsActive);
 
-        final CategoryGateway categoryGateway = Mockito.mock(CategoryGateway.class);
         Mockito.when(categoryGateway.create(Mockito.any()))
                 .thenAnswer(AdditionalAnswers.returnsFirstArg());
-
-        final var useCase = new DefaultCreateCategoryUseCase(categoryGateway);
 
         final var actualOutput = useCase.execute(aComand);
 
@@ -49,16 +57,17 @@ public class CreateCategoryUseCaseTest {
         final var expectedName = "Filme";
         final var expectedDescription = "Categoria muito top";
         final var expectedIsActive = true;
+        final var expectedErrorMessage = "";
+        final var expectedErrorCount = 1;
 
         final var aComand = new CreateCategoryComand(expectedName, expectedDescription, expectedIsActive);
 
-        final CategoryGateway categoryGateway = Mockito.mock(CategoryGateway.class);
         Mockito.when(categoryGateway.create(Mockito.any()))
                 .thenAnswer(AdditionalAnswers.returnsFirstArg());
 
-        final var usecase = new DefaultCreateCategoryUseCase(categoryGateway);
+        final var actualOutput = useCase.execute(aComand);
 
-        final var actualOutput = usecase.execute(aComand);
+        Assertions.assertThrows(DomainException.class, ()-> useCase.execute(aComand));
 
     }
 

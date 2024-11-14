@@ -99,4 +99,34 @@ public class CreateCategoryUseCaseTest {
                         }
                 ));
     }
+
+    @Test
+    public void givenAValidComand_whenGatewayThrowsRandomException_shouldReturnAException(){
+        final var expectedName = "Filme";
+        final var expectedDescription = "Categoria muito top";
+        final var expectedIsActive = true;
+        final var expectedErrorMessage = "Gateway error";
+
+        final var aComand = CreateCategoryComand.with(expectedName, expectedDescription, expectedIsActive);
+
+        Mockito.when(categoryGateway.create(Mockito.any()))
+                .thenThrow(new IllegalStateException("Gateway error"));
+
+        final var actualException =
+                Assertions.assertThrows(IllegalStateException.class, ()-> useCase.execute(aComand));
+
+        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
+
+        Mockito.verify(categoryGateway, Mockito.times(1))
+                .create(Mockito.argThat(aCategory -> {
+                            return Objects.equals(expectedName, aCategory.getName())
+                                    && Objects.equals(expectedDescription, aCategory.getDescription())
+                                    && Objects.equals(expectedIsActive, aCategory.isActive())
+                                    && Objects.nonNull(aCategory.getId())
+                                    && Objects.nonNull(aCategory.getCreateAt())
+                                    && Objects.nonNull(aCategory.getUpdateAt())
+                                    && Objects.isNull(aCategory.getDeleteAt());
+                        }
+                ));
+    }
 }

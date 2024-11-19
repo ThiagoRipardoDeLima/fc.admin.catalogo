@@ -3,10 +3,12 @@ package com.fc.admin.catalogo.application.category.create;
 import com.fc.admin.catalogo.domain.category.Category;
 import com.fc.admin.catalogo.domain.category.CategoryGateway;
 import com.fc.admin.catalogo.domain.validation.handler.Notification;
-import com.fc.admin.catalogo.domain.validation.handler.ThrowsValidationHandler;
+import io.vavr.API;
 import io.vavr.control.Either;
 
 import java.util.Objects;
+
+import static io.vavr.control.Either.left;
 
 public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase{
 
@@ -27,10 +29,12 @@ public class DefaultCreateCategoryUseCase extends CreateCategoryUseCase{
         final var aCategory = Category.newCategory(aName, aDescription, aActive);
         aCategory.validate(notication);
 
-        if(notication.hasError()){
-            // return errors
-        }
+        return notication.hasError() ? left(notication) : create(aCategory);
+    }
 
-        return CreateCategoryOutput.from(this.categoryGateway.create(aCategory));
+    private Either<Notification, CreateCategoryOutput> create(final Category aCategory) {
+        return API.Try(() -> this.categoryGateway.create(aCategory))
+                .toEither()
+                .bimap(Notification::create, CreateCategoryOutput::from);
     }
 }

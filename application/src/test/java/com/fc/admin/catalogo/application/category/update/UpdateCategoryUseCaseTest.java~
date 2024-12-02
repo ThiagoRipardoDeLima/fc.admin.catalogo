@@ -27,8 +27,8 @@ public class UpdateCategoryUseCaseTest {
     @Mock
     private CategoryGateway categoryGateway;
 
-    //ok teste do caminho feliz
-    //ok teste passando uma propriedade invalida
+    // teste do caminho feliz
+    // teste passando uma propriedade invalida
     // teste atualizando uma categoria para inativa
     // teste simulando um erro generico vindo do gateway
     // teste atualizando uma categoria passando ID invalido
